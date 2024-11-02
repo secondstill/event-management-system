@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h2>Available Events</h2>
+<ul>
+    {% for event in events %}
+    <li>
+        <strong>{{ event.title }}</strong> - {{ event.date }} - {{ event.venue }}
+        <br>
+        <p>{{ event.description }}</p>
+        
+        {% if user.is_authenticated %}
+            {% if event.is_registered %}
+                <p>Registered</p>
+                {% if not event.attendance.check_in %}
+                    <a href="{% url 'mark_attendance' event.id %}">Mark Attendance</a>
+                {% else %}
+                    <p>Attendance Marked</p>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'register_event' event.id %}">Register</a>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}?next={{ request.path }}">Login to Register</a></p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
